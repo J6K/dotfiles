@@ -1,0 +1,31 @@
+#github
+alias ga="git add"
+alias gs="git status"
+alias gc="git checkout"
+alias gd="git diff"
+alias gp="git push"
+## master
+alias gcm="git checkout master"
+alias gcmpull="git checkout master && git pull"
+## develop
+alias gcd="git checkout develop"
+alias gcdpull="git checkout develop && git pull"
+
+#ruby
+alias bx="bundle exec"
+alias bxr="bundle exec rspec"
+
+#docker
+alias de="docker exec"
+
+#vim
+alias vim="vim -u ~/.vim/.vimrc"
+
+#scripts
+git_push() {
+  git push
+  output=echo "$LAST"
+  
+  read -r line  
+}
+

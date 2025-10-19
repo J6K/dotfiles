@@ -1,48 +1,79 @@
-set nocompatible              " be iMproved, required
-filetype off                  " required
+" ============================
+" Basic Settings
+" ============================
+set nocompatible              " Use Vim settings, not vi
+syntax on                     " Enable syntax highlighting
+set number                    " Show line numbers
+set relativenumber            " Relative numbers
+set cursorline                " Highlight current line
+set mouse=a                   " Enable mouse support
+set clipboard=unnamedplus     " Use system clipboard everywhere
+set hidden                    " Allow background buffers
+set tabstop=4 shiftwidth=4 expandtab  " Spaces instead of tabs
 
-" set the runtime path to include Vundle and initialize plugins
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
+" ============================
+" Detect OS
+" ============================
+if has("macunix")
+  let g:is_mac = 1
+elseif has("win32") || has("win64")
+  let g:is_win = 1
+endif
 
-Plugin 'VundleVim/Vundle.vim'
-Plugin 'tpope/vim-fugitive'
-Plugin 'vim-syntastic/syntastic'
-Plugin 'jiangmiao/auto-pairs'
-Plugin 'scrooloose/nerdtree'
-Plugin 'git://git.wincent.com/command-t.git'
-Plugin 'lifepillar/vim-solarized8'
+" ============================
+" Keybindings (Mac layout priority)
+" ============================
+" Command-like bindings (mac first)
+nnoremap <D-s> :w<CR>          " Cmd+S = Save
+nnoremap <D-q> :q<CR>          " Cmd+Q = Quit
+nnoremap <D-a> ggVG            " Cmd+A = Select all
+nnoremap <D-c> "+y             " Cmd+C = Copy to clipboard
+vnoremap <D-c> "+y             " Cmd+C in visual mode
+nnoremap <D-v> "+p             " Cmd+V = Paste
+inoremap <D-v> <C-r>+          " Cmd+V in insert mode
 
-call vundle#end()
+" Windows-specific tweaks
+if exists("g:is_win")
+  " Sometimes Alt/Meta keys behave differently on Windows terminals
+  nnoremap <A-Left> b
+  nnoremap <A-Right> e
+endif
 
-filetype plugin indent on
-
-syntax on
+" ============================
+" Colorscheme
+" ============================
 set background=dark
-colorscheme solarized8
+colorscheme solarized          " Requires solarized installed
+highlight Normal ctermbg=NONE  " Transparent background if supported
 
-set ruler
-set number
-set modelines=0
-set mouse=a    
-set backspace=2
-set showmatch
-set clipboard=unnamed
+" ============================
+" Plugin Manager (vim-plug)
+" ============================
+" Install vim-plug if missing
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+        \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
 
-" tabs
-set tabstop=10
-set shiftwidth=2
-set softtabstop=2
-set shiftround
-set expandtab
+call plug#begin('~/.vim/plugged')
 
-" NERDtree
-map <C-n> :NERDTreeToggle<CR>
+" Popular & useful plugins
+Plug 'tpope/vim-sensible'           " Reasonable defaults
+Plug 'altercation/vim-colors-solarized' " Solarized theme
+Plug 'tpope/vim-surround'           " Surround text easily
+Plug 'junegunn/fzf.vim'             " Fuzzy finder
+Plug 'airblade/vim-gitgutter'       " Git diff markers
+Plug 'preservim/nerdtree'           " File tree explorer
+Plug 'vim-airline/vim-airline'      " Status bar
+Plug 'neoclide/coc.nvim', {'branch': 'release'} " Intellisense-like completion
 
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+call plug#end()
 
-" syntastic
-let g:syntastic_check_on_open = 1
-let g:syntastic_check_on_wq = 0
-let g:syntastic_ruby_checkers = ['rubocop']
-
+" ============================
+" Extra UX Settings
+" ============================
+set splitbelow splitright       " Open splits more naturally
+set ignorecase smartcase        " Case-insensitive search unless caps
+set incsearch                   " Incremental search
+set hlsearch                    " Highlight search matches

@@ -1,46 +1,61 @@
--- coc.nvim used a separate Node-based language-server host. Neovim now has
--- a built-in LSP client, so this replaces coc with:
---   mason.nvim        -> installs language servers for you
---   mason-lspconfig   -> bridges mason <-> lspconfig
---   nvim-lspconfig    -> sane default configs per server
+-- ============================
+-- Language servers (replaces coc.nvim)
+--   mason.nvim       installs language servers
+--   mason-lspconfig  installs the servers below and enables them
+--   nvim-lspconfig   ships the default config for each server
+-- Uses Neovim's built-in LSP client (vim.lsp.config / vim.lsp.enable).
+-- ============================
+
+-- Edit this list to match the languages you use. Browse options with :Mason.
+local SERVERS = { "lua_ls", "pyright", "ts_ls", "bashls" }
+
+--- Buffer-local keymaps, set whenever a server attaches to a buffer.
+local function set_lsp_keymaps(bufnr)
+  local function map(lhs, rhs, desc)
+    vim.keymap.set("n", lhs, rhs, { buffer = bufnr, silent = true, desc = desc })
+  end
+
+  map("gd", vim.lsp.buf.definition, "Go to definition")
+  map("gr", vim.lsp.buf.references, "Go to references")
+  map("K", vim.lsp.buf.hover, "Hover docs")
+  map("<leader>rn", vim.lsp.buf.rename, "Rename symbol")
+  map("<leader>ca", vim.lsp.buf.code_action, "Code action")
+  map("]d", function() vim.diagnostic.jump({ count = 1, float = true }) end, "Next diagnostic")
+  map("[d", function() vim.diagnostic.jump({ count = -1, float = true }) end, "Prev diagnostic")
+end
+
+local function setup_lsp()
+  -- settings shared by every server: advertise nvim-cmp completion support
+  vim.lsp.config("*", {
+    capabilities = require("cmp_nvim_lsp").default_capabilities(),
+  })
+
+  vim.api.nvim_create_autocmd("LspAttach", {
+    group = vim.api.nvim_create_augroup("UserLspKeymaps", { clear = true }),
+    callback = function(args)
+      set_lsp_keymaps(args.buf)
+    end,
+  })
+end
+
 return {
   {
-    "williamboman/mason.nvim",
-    config = true, -- calls require("mason").setup()
-  },
-  {
-    "williamboman/mason-lspconfig.nvim",
-    dependencies = { "williamboman/mason.nvim" },
-    opts = {
-      -- adjust this list to the languages you actually use
-      ensure_installed = { "lua_ls", "pyright", "tsserver", "bashls" },
-    },
+    "mason-org/mason.nvim",
+    opts = {},
   },
   {
     "neovim/nvim-lspconfig",
     dependencies = { "hrsh7th/cmp-nvim-lsp" },
+    lazy = true, -- loaded as a dependency of mason-lspconfig below
+    config = setup_lsp,
+  },
+  {
+    "mason-org/mason-lspconfig.nvim",
+    dependencies = { "mason-org/mason.nvim", "neovim/nvim-lspconfig" },
     event = { "BufReadPre", "BufNewFile" },
-    config = function()
-      local lspconfig = require("lspconfig")
-      local capabilities = require("cmp_nvim_lsp").default_capabilities()
-
-      local on_attach = function(_, bufnr)
-        local opts = { buffer = bufnr, silent = true }
-        vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
-        vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
-        vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
-        vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
-        vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
-        vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
-        vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
-      end
-
-      for _, server in ipairs({ "lua_ls", "pyright", "tsserver", "bashls" }) do
-        lspconfig[server].setup({
-          capabilities = capabilities,
-          on_attach = on_attach,
-        })
-      end
-    end,
+    opts = {
+      ensure_installed = SERVERS,
+      automatic_enable = true, -- calls vim.lsp.enable() for installed servers
+    },
   },
 }

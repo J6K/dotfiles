@@ -1,19 +1,28 @@
--- Telescope replaces fzf + fzf.vim. It's the standard modern fuzzy-finder,
--- integrates with LSP/git/treesitter out of the box, and is pure Lua so
--- there's no external binary to install (beyond ripgrep for live_grep).
+-- ============================
+-- Telescope: fuzzy finder (replaces fzf + fzf.vim). Needs ripgrep for
+-- live_grep.
+-- ============================
+local platform = require("config.platform")
+
 return {
   "nvim-telescope/telescope.nvim",
   branch = "0.1.x",
   dependencies = {
     "nvim-lua/plenary.nvim",
-    { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+    {
+      -- Optional native sorter. Skipped when there's no C toolchain (e.g. stock
+      -- Windows), in which case Telescope uses its built-in Lua sorter.
+      "nvim-telescope/telescope-fzf-native.nvim",
+      build = "make",
+      cond = platform.can_build_c,
+    },
   },
   cmd = "Telescope",
   keys = {
-    { "<leader>f", "<cmd>Telescope find_files<cr>", desc = "Find files" },
-    { "<leader>g", "<cmd>Telescope live_grep<cr>", desc = "Grep search" },
-    { "<leader>b", "<cmd>Telescope buffers<cr>", desc = "Buffers" },
-    { "<leader>/", "<cmd>Telescope current_buffer_fuzzy_find<cr>", desc = "Search lines in buffer" },
+    { "<leader>f", "<Cmd>Telescope find_files<CR>", desc = "Find files" },
+    { "<leader>g", "<Cmd>Telescope live_grep<CR>", desc = "Grep search" },
+    { "<leader>b", "<Cmd>Telescope buffers<CR>", desc = "List buffers" },
+    { "<leader>/", "<Cmd>Telescope current_buffer_fuzzy_find<CR>", desc = "Search lines in buffer" },
   },
   config = function()
     local telescope = require("telescope")
@@ -24,6 +33,6 @@ return {
         layout_config = { prompt_position = "top" },
       },
     })
-    pcall(telescope.load_extension, "fzf")
+    pcall(telescope.load_extension, "fzf") -- fine if fzf-native was skipped
   end,
 }

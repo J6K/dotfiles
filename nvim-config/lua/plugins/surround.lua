@@ -1,8 +1,10 @@
--- nvim-surround: same job as tpope/vim-surround (ys, cs, ds), rewritten
--- in Lua with treesitter-aware surrounds.
+-- ============================
+-- nvim-surround: add / change / delete surroundings with ys, cs, ds
+-- (same keys as tpope/vim-surround).
+-- ============================
 return {
   "kylechui/nvim-surround",
-  event = "VeryLazy",
   version = "*",
+  event = "VeryLazy",
   opts = {},
 }

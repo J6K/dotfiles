@@ -1,36 +1,36 @@
 -- ============================
--- Basic Settings
--- (ported 1:1 from the old vimrc `set` block; Neovim defaults already cover
---  a lot of what vim-sensible used to add, so that plugin is gone too)
+-- Editor options
+-- Only non-defaults are listed; Neovim already enables hidden, incsearch,
+-- hlsearch, utf-8, etc. (which is why vim-sensible is no longer needed).
 -- ============================
 local opt = vim.opt
 
-opt.number = true              -- Show line numbers
-opt.relativenumber = true      -- Relative numbers (great for motions: 5j, 3k)
-opt.cursorline = true          -- Highlight current line
-opt.mouse = "a"                -- Enable mouse support
-opt.clipboard = "unnamedplus"  -- Use system clipboard everywhere
-opt.hidden = true               -- Allow background buffers (default true in nvim, kept explicit)
+-- Line numbers
+opt.number = true
+opt.relativenumber = true -- great for motions: 5j, 3k
+opt.cursorline = true
+opt.signcolumn = "yes"    -- always shown, so diagnostics don't shift text
+
+-- Indentation
 opt.tabstop = 4
 opt.shiftwidth = 4
 opt.expandtab = true
-opt.scrolloff = 8              -- Keep 8 lines above/below cursor
-opt.signcolumn = "yes"         -- Always show sign column (prevents layout jump)
-opt.updatetime = 300           -- Faster CursorHold (helps gitsigns, LSP)
-opt.encoding = "utf-8"
-opt.swapfile = false           -- Avoid swap file annoyances
-opt.undofile = true            -- Persistent undo across sessions
-opt.undodir = vim.fn.expand("~/.local/state/nvim/undo")
 
-opt.splitbelow = true          -- Open splits more naturally
+-- Search
+opt.ignorecase = true -- case-insensitive...
+opt.smartcase = true  -- ...unless the pattern has capitals
+
+-- Splits open below / to the right
+opt.splitbelow = true
 opt.splitright = true
-opt.ignorecase = true          -- Case-insensitive search unless caps
-opt.smartcase = true
-opt.incsearch = true           -- Incremental search
-opt.hlsearch = true            -- Highlight search matches
 
-opt.termguicolors = true       -- True color support (needed by most modern themes)
-opt.background = "dark"
+-- Behaviour
+opt.mouse = "a"
+opt.clipboard = "unnamedplus" -- y/p use the system clipboard
+opt.scrolloff = 8
+opt.updatetime = 300          -- faster CursorHold (gitsigns, LSP)
+opt.swapfile = false
+opt.undofile = true           -- persistent undo, stored in stdpath("state")/undo
 
--- make sure the undo dir actually exists
-vim.fn.mkdir(vim.fn.expand("~/.local/state/nvim/undo"), "p")
+-- Colors
+opt.termguicolors = true

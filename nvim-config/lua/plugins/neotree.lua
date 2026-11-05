@@ -1,5 +1,6 @@
--- neo-tree.nvim replaces NERDTree: modern file explorer with git status,
--- diagnostics integration, and a nicer floating/side layout.
+-- ============================
+-- neo-tree: file explorer with git status (replaces NERDTree).
+-- ============================
 return {
   "nvim-neo-tree/neo-tree.nvim",
   branch = "v3.x",
@@ -10,12 +11,12 @@ return {
   },
   cmd = "Neotree",
   keys = {
-    { "<leader>e", "<cmd>Neotree toggle<cr>", desc = "Toggle file explorer" },
+    { "<leader>e", "<Cmd>Neotree toggle<CR>", desc = "Toggle file explorer" },
   },
   opts = {
     filesystem = {
       follow_current_file = { enabled = true },
-      hijack_netrw_behavior = "open_current",
+      hijack_netrw_behavior = "open_current", -- `nvim .` opens neo-tree
     },
   },
 }

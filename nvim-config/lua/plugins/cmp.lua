@@ -1,4 +1,30 @@
--- nvim-cmp: the completion half of what coc.nvim used to provide.
+-- ============================
+-- nvim-cmp: completion menu (the completion half of what coc.nvim did).
+-- Sources: LSP, snippets, words in the buffer, file paths.
+-- ============================
+local function setup()
+  local cmp = require("cmp")
+  local luasnip = require("luasnip")
+
+  cmp.setup({
+    snippet = {
+      expand = function(args)
+        luasnip.lsp_expand(args.body)
+      end,
+    },
+    mapping = cmp.mapping.preset.insert({
+      ["<C-Space>"] = cmp.mapping.complete(),
+      ["<CR>"] = cmp.mapping.confirm({ select = true }),
+      ["<Tab>"] = cmp.mapping.select_next_item(),
+      ["<S-Tab>"] = cmp.mapping.select_prev_item(),
+    }),
+    sources = cmp.config.sources(
+      { { name = "nvim_lsp" }, { name = "luasnip" } }, -- preferred
+      { { name = "buffer" }, { name = "path" } }       -- fallback
+    ),
+  })
+end
+
 return {
   "hrsh7th/nvim-cmp",
   event = "InsertEnter",
@@ -9,29 +35,5 @@ return {
     "L3MON4D3/LuaSnip",
     "saadparwaiz1/cmp_luasnip",
   },
-  config = function()
-    local cmp = require("cmp")
-    local luasnip = require("luasnip")
-
-    cmp.setup({
-      snippet = {
-        expand = function(args)
-          luasnip.lsp_expand(args.body)
-        end,
-      },
-      mapping = cmp.mapping.preset.insert({
-        ["<C-Space>"] = cmp.mapping.complete(),
-        ["<CR>"] = cmp.mapping.confirm({ select = true }),
-        ["<Tab>"] = cmp.mapping.select_next_item(),
-        ["<S-Tab>"] = cmp.mapping.select_prev_item(),
-      }),
-      sources = cmp.config.sources({
-        { name = "nvim_lsp" },
-        { name = "luasnip" },
-      }, {
-        { name = "buffer" },
-        { name = "path" },
-      }),
-    })
-  end,
+  config = setup,
 }

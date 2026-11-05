@@ -1,12 +1,14 @@
--- lualine.nvim replaces vim-airline: the current standard statusline plugin,
--- configured entirely in Lua and noticeably faster to render.
+-- ============================
+-- lualine: statusline (replaces vim-airline).
+-- Theme lives in lua/lualine/themes/indigo_clear.lua.
+-- ============================
 return {
   "nvim-lualine/lualine.nvim",
   dependencies = { "nvim-tree/nvim-web-devicons" },
   event = "VeryLazy",
   opts = {
     options = {
-      theme = "auto",
+      theme = "indigo_clear",
       globalstatus = true,
     },
   },

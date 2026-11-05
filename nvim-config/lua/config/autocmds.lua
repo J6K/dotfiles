@@ -1,19 +1,23 @@
 -- ============================
 -- Autocommands
 -- ============================
-local augroup = vim.api.nvim_create_augroup("UserConfig", { clear = true })
+local group = vim.api.nvim_create_augroup("UserConfig", { clear = true })
 
--- Highlight yanked text briefly (nice modern touch, cheap to add)
+-- Briefly highlight yanked text
 vim.api.nvim_create_autocmd("TextYankPost", {
-  group = augroup,
+  group = group,
   callback = function()
-    vim.highlight.on_yank({ timeout = 150 })
+    vim.hl.on_yank({ timeout = 150 })
   end,
 })
 
--- Remove trailing whitespace on save
+-- Strip trailing whitespace on save, without moving the cursor or
+-- polluting search history
 vim.api.nvim_create_autocmd("BufWritePre", {
-  group = augroup,
-  pattern = "*",
-  command = [[%s/\s\+$//e]],
+  group = group,
+  callback = function()
+    local view = vim.fn.winsaveview()
+    vim.cmd([[keeppatterns %s/\s\+$//e]])
+    vim.fn.winrestview(view)
+  end,
 })

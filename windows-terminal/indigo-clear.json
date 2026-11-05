@@ -1,0 +1,28 @@
+{
+    "schemes":
+    [
+        {
+            "name": "Indigo Clear",
+            "background": "#1E1B4B",
+            "foreground": "#F4F4FF",
+            "cursorColor": "#FFFFFF",
+            "selectionBackground": "#4338CA",
+            "black": "#2E2A6E",
+            "red": "#FF8A3D",
+            "green": "#4FE3C1",
+            "yellow": "#FFE27A",
+            "blue": "#A9B8FF",
+            "purple": "#FF9ED8",
+            "cyan": "#8FD8FF",
+            "white": "#DCDCF5",
+            "brightBlack": "#8A88C6",
+            "brightRed": "#FFA866",
+            "brightGreen": "#8AF0D8",
+            "brightYellow": "#FFF0B0",
+            "brightBlue": "#CDD6FF",
+            "brightPurple": "#FFC4E8",
+            "brightCyan": "#B8E8FF",
+            "brightWhite": "#FFFFFF"
+        }
+    ]
+}
